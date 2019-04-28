@@ -1,0 +1,26 @@
+{
+    "name": "labs7in0/laravel-partitioning",
+    "description": "A horizontal partitioning library for Laravel Eloquent.",
+    "keywords": [
+        "laravel",
+        "partition",
+        "partitioning",
+        "shard"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chino Chang",
+            "email": "me@7in0.me"
+        }
+    ],
+    "require": {
+        "laravel/framework": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "labs7in0\\partitioning\\": "src/"
+        }
+    }
+}
