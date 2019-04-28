@@ -9,50 +9,38 @@ class PartitioningEloquentBuilder extends Builder
 {
     private $partitions = [];
 
-    public function combine($tables)
+    public function combine($partitions, $all = true)
     {
-        $this->partitions = $tables;
+        if (!function_exists('is_iterable')) {
+            if (!is_array($arg) &&
+                !$arg instanceof \Generator &&
+                !$arg instanceof \Iterator) {
+                throw new \Exception('The value of $partitions is not iterable');
+            }
+        } else {
+            if (false == is_iterable($this->partitions)) {
+                throw new \Exception('The value of $partitions is not iterable');
+            }
+        }
+
+        foreach ($partitions as $partition) {
+            $this->partitions[$partition] = $all;
+        }
 
         return $this;
     }
 
     public function combineByBounds(...$args)
     {
-        foreach ($this->getModel()->getFormatter()->toPartitions(...$args) as $partition) {
-            $this->partitions[] = $partition;
-        }
-
-        return $this;
+        return $this->combine($this->getModel()->getFormatter()->toPartitions(...$args));
     }
 
     public function get($columns = ['*'])
     {
-        return $this->_union($this->partitions)->_get();
-    }
-
-    private function _get($columns = ['*'])
-    {
-        return parent::get($columns);
-    }
-
-    private function _union($tables, $all = true)
-    {
-        if (!function_exists('is_iterable')) {
-            if (!is_array($arg) &&
-                !$arg instanceof \Generator &&
-                !$arg instanceof \Iterator) {
-                throw new \Exception();
-            }
-        } else {
-            if (false == is_iterable($tables)) {
-                throw new \Exception();
-            }
-        }
-
         $query = $this->getQuery();
         $clone = clone $query;
 
-        foreach ($tables as $index => $table) {
+        foreach ($this->partitions as $table => $all) {
             if (!Schema::hasTable($table)) continue;
 
             $brother = clone $clone;
@@ -61,6 +49,6 @@ class PartitioningEloquentBuilder extends Builder
             $query->union($brother, $all);
         }
 
-        return $this;
+        return parent::get($columns);
     }
 }
