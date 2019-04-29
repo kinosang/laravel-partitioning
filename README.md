@@ -1,5 +1,7 @@
 # Laravel Partitioning
 
+**[Deprecated] Use DB-level partitioning instead.**
+
 A horizontal partitioning library for Laravel Eloquent.
 
 ## Installation
