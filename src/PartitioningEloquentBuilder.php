@@ -30,9 +30,9 @@ class PartitioningEloquentBuilder extends Builder
         return $this;
     }
 
-    public function combineByBounds(...$args)
+    public function combineByBounds($all, ...$args)
     {
-        return $this->combine($this->getModel()->getFormatter()->toPartitions(...$args));
+        return $this->combine($this->getModel()->getFormatter()->toPartitions(...$args), $all);
     }
 
     public function get($columns = ['*'])
